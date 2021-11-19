@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Users/Administrator/CoinsApplication/app/src/main/res/drawable/bg_roundcorner_gray_8dp.xml" value="0.14479166666666668" />
+        <entry key="..\:/Users/Administrator/CoinsApplication/app/src/main/res/drawable/icon_search_.xml" value="0.14479166666666668" />
+        <entry key="..\:/Users/Administrator/CoinsApplication/app/src/main/res/layout/activity_main_coins.xml" value="0.1743659420289855" />
+        <entry key="..\:/Users/Administrator/CoinsApplication/app/src/main/res/layout/fragment_coin_list.xml" value="0.25052083333333336" />
+        <entry key="..\:/Users/Administrator/CoinsApplication/app/src/main/res/layout/item_coin.xml" value="0.190625" />
+        <entry key="..\:/Users/Administrator/CoinsApplication/app/src/main/res/layout/item_coin_right.xml" value="0.190625" />
+        <entry key="..\:/Users/Administrator/CoinsApplication/app/src/main/res/layout/item_left_coin.xml" value="0.1" />
+        <entry key="..\:/Users/Administrator/CoinsApplication/app/src/main/res/layout/item_loading.xml" value="0.1578125" />
+        <entry key="..\:/Users/Administrator/CoinsApplication/app/src/main/res/layout/item_right_coin.xml" value="0.264" />
+        <entry key="..\:/Users/Administrator/CoinsApplication/app/src/main/res/layout/view_line_gray.xml" value="0.190625" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>
