@@ -7,5 +7,7 @@ data class Stats(
     @SerializedName("limit")
     val limit: Int,
     @SerializedName("offset")
-    val offset: Int
+    val offset: Int,
+    @SerializedName("total")
+    val total: Int
 )

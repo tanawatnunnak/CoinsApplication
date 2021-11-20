@@ -9,5 +9,6 @@ data class CoinListState(
     var limitPage: Int = 10,
     var currentPage: Int = 0,
     var isRefreshing: Boolean = false,
-    var searchWord: String = ""
+    var searchWord: String = "",
+    var isLastPage: Boolean = false
 )

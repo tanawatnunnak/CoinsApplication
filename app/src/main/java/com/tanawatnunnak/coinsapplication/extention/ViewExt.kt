@@ -1,21 +1,12 @@
 package com.tanawatnunnak.coinsapplication.extention
 
-import android.net.Uri
-import android.os.Build
-import android.text.Html
-import android.text.Spanned
 import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.RecyclerView
 import coil.ImageLoader
 import coil.decode.SvgDecoder
-import coil.load
 import coil.request.ImageRequest
-import android.R
-
-import okhttp3.OkHttpClient
 
 
 fun View.setVisibility(isVisible: Boolean) {
@@ -52,4 +43,5 @@ fun ImageView.loadSvg(url: String) {
 
     imageLoader.enqueue(request)
 }
+
 

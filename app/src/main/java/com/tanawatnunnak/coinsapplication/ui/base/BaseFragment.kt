@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
+import android.app.Activity
+import android.view.inputmethod.InputMethodManager
 
 abstract class BaseFragment<VBinding : ViewBinding> : Fragment() {
     protected var binding: VBinding? = null
@@ -26,12 +28,22 @@ abstract class BaseFragment<VBinding : ViewBinding> : Fragment() {
         initObservable()
     }
 
-    open fun initView(){}
+    open fun initView() {}
 
-    open fun initObservable(){}
+    open fun initObservable() {}
 
-    override fun onDestroy() {
-        super.onDestroy()
+    open fun hideKeyboard() {
+        val imm: InputMethodManager =
+            requireActivity().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        var view = requireActivity().currentFocus
+        if (view == null) {
+            view = View(activity)
+        }
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
+    }
+
+    override fun onDestroyView() {
         binding = null
+        super.onDestroyView()
     }
 }

@@ -5,10 +5,8 @@ import androidx.recyclerview.widget.RecyclerView
 
 class RecyclerViewLoadMoreScroll : RecyclerView.OnScrollListener() {
 
-    private var visibleThreshold = 5
     private lateinit var mOnLoadMoreListener: OnLoadMoreListener
     private var isLoading: Boolean = false
-    //private var mLayoutManager: RecyclerView.LayoutManager
     private var isLastPage = false
 
     fun setLoaded() {

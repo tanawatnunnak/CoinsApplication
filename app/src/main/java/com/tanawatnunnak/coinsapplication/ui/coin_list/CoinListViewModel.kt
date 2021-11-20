@@ -4,20 +4,22 @@ import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tanawatnunnak.coinsapplication.data.constant.SearchCoinType
+import com.tanawatnunnak.coinsapplication.data.model.Coin
 import com.tanawatnunnak.coinsapplication.data.model.CoinResponse
+import com.tanawatnunnak.coinsapplication.data.model.Resource
 import com.tanawatnunnak.coinsapplication.data.model.SearchCoinParam
 import com.tanawatnunnak.coinsapplication.data.repository.CoinRepository
-import com.tanawatnunnak.coinsapplication.extention.isAllUpperCase
-import com.tanawatnunnak.coinsapplication.extention.isFirstUpperCase
 import com.tanawatnunnak.coinsapplication.ui.base.BaseViewModel
-import com.tanawatnunnak.coinsapplication.ui.coin_list.adapter.CoinBaseItem
+import com.tanawatnunnak.coinsapplication.ui.coin_list.CoinListFragment.Companion.FIRST_PAGE
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.kotlin.addTo
 import io.reactivex.rxjava3.schedulers.Schedulers
-import retrofit2.Response
 import java.util.concurrent.TimeUnit
 
-class CoinListViewModel(private val coinRepository: CoinRepository) : BaseViewModel() {
+class CoinListViewModel(
+    private val coinRepository: CoinRepository,
+    private val coinConverter: CoinConverter
+) : BaseViewModel() {
 
     private val _state: MutableLiveData<CoinListState> = MutableLiveData()
     val state: LiveData<CoinListState> = _state
@@ -26,7 +28,7 @@ class CoinListViewModel(private val coinRepository: CoinRepository) : BaseViewMo
         _state.value = CoinListState(isLoading = true)
     }
 
-    fun getCoins() {
+    fun fetchCoins() {
         _state.value?.let { state ->
             coinRepository.getCoins(state.limitPage, state.currentPage)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -38,9 +40,9 @@ class CoinListViewModel(private val coinRepository: CoinRepository) : BaseViewMo
 
     fun loadMore() {
         _state.value?.let { state ->
-            state.currentPage++
+            state.currentPage += 10
             if (state.searchWord.isEmpty()) {
-                getCoins()
+                fetchCoins()
             } else {
                 search(state.searchWord)
             }
@@ -49,21 +51,39 @@ class CoinListViewModel(private val coinRepository: CoinRepository) : BaseViewMo
 
     fun refresh() {
         _state.value?.let { state ->
-            state.currentPage = 0
-            state.isRefreshing = true
-            getCoins()
+            state.currentPage = FIRST_PAGE
+            if (state.searchWord.isEmpty()) {
+                fetchCoins()
+            } else {
+                search(state.searchWord)
+            }
         }
     }
 
-    fun search(searchWord: String) {
+    fun searchWord(searchWord: String) {
         _state.value?.let { state ->
-            state.searchWord = searchWord
-            state.currentPage = 0
+            if (searchWord.isEmpty()) {
+                state.searchWord = searchWord
+                fetchCoins()
+            } else {
+                if (searchWord != state.searchWord) {
+                    state.searchWord = searchWord
+                    state.currentPage = FIRST_PAGE
+                    search(searchWord)
+                }
+            }
+        }
+    }
+
+    private fun search(searchWord: String) {
+        _state.value?.let { state ->
+
             val searchCoinParam = SearchCoinParam(
                 searchType = checkSearchType(searchWord),
                 id = searchWord.toIntOrNull(),
                 search = searchWord
             )
+
             coinRepository.searchCoin(searchCoinParam, state.limitPage, state.currentPage)
                 .debounce(1, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -81,38 +101,41 @@ class CoinListViewModel(private val coinRepository: CoinRepository) : BaseViewMo
     }
 
     private fun onError(throwable: Throwable) {
-        val newState =
-            _state.value?.copy(errorMessage = throwable.message ?: "something went wrong")
-        _state.postValue(newState)
+        setErrorState(throwable.message ?: "something went wrong")
     }
 
-    private fun onSuccess(response: Response<CoinResponse>) {
-        if (response.isSuccessful && response.body() != null) {
-            val coinBaseItemList = CoinConverter().convertToCoinItem(response.body()?.data?.coins)
-            setCoinBaseItemList(coinBaseItemList)
-        } else {
-            setErrorState(response.message())
+    private fun onSuccess(resource: Resource<CoinResponse>) {
+        when (resource) {
+            is Resource.Error -> setErrorState(messageError = resource.message)
+            is Resource.Success -> setCoinBaseItemList(
+                coinList = resource.data?.data?.coins,
+                total = resource.data?.data?.stats?.total ?: 0
+            )
         }
     }
 
-    private fun setErrorState(messageError: String) {
-        val newState = _state.value?.copy(errorMessage = messageError, isLoading = false)
+    private fun setErrorState(messageError: String?) {
+        val newState = _state.value?.copy(errorMessage = messageError ?: "", isLoading = false)
         _state.value = newState
     }
 
-    private fun setCoinBaseItemList(coinBaseItemList: ArrayList<CoinBaseItem>?) {
-        coinBaseItemList?.let { coinList ->
-            val currentPage = _state.value?.currentPage ?: 0
-            if (currentPage == 0) {
-                _state.value?.coinList = ArrayList(coinList)
+    private fun setCoinBaseItemList(coinList: List<Coin?>?, total: Int) {
+        coinList?.let { list ->
+            val coinBaseItemList = coinConverter.convertToCoinItem(list)
+            val currentPage = _state.value?.currentPage ?: FIRST_PAGE
+
+            if (currentPage == FIRST_PAGE) {
+                _state.value?.coinList = coinBaseItemList
             } else {
-                _state.value?.coinList?.addAll(coinList)
+                _state.value?.coinList?.addAll(coinBaseItemList)
             }
+
             val newState = _state.value?.copy(
                 errorMessage = "",
                 isLoading = false,
-                isRefreshing = false,
+                isLastPage = currentPage >= total || total == 0
             )
+
             _state.value = newState
         }
     }

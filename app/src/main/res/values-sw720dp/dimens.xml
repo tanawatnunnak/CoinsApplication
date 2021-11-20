@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="content_width">660dp</dimen>
+    <dimen name="margin_start_size">30dp</dimen>
+    <dimen name="margin_end_size">30dp</dimen>
+</resources>

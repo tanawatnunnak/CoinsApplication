@@ -13,34 +13,6 @@ fun String.htmlToString(): Spanned {
     return description
 }
 
-fun String.isFirstUpperCase(): Boolean {
-    var firstUpperCase = false
-    if (this.isNotEmpty()) {
-        if (this[0].isUpperCase()) {
-            firstUpperCase = true
-        }
-    }
-    return firstUpperCase
-}
-
-/*fun String.isFirstLowCase() {
-    if (length > 0) {
-
-    }
-}*/
-
-fun String.isAllUpperCase(): Boolean {
-    var allUpperCase = false
-    if (this.isNotEmpty()) {
-        val charList = this.toCharArray()
-        run loop@{
-            charList.forEach {
-                if (it.isUpperCase()) {
-                    allUpperCase = true
-                    return@loop
-                }
-            }
-        }
-    }
-    return allUpperCase
+fun String.isSvg(): Boolean{
+    return this.contains(".svg")
 }

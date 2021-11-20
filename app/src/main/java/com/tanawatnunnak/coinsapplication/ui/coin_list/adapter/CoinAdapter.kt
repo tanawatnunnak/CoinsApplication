@@ -9,6 +9,7 @@ import com.tanawatnunnak.coinsapplication.databinding.ItemLeftCoinBinding
 import com.tanawatnunnak.coinsapplication.databinding.ItemLoadingBinding
 import com.tanawatnunnak.coinsapplication.databinding.ItemRightCoinBinding
 import com.tanawatnunnak.coinsapplication.extention.htmlToString
+import com.tanawatnunnak.coinsapplication.extention.isSvg
 import com.tanawatnunnak.coinsapplication.extention.loadSvg
 
 class CoinAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -66,13 +67,7 @@ class CoinAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     @SuppressLint("NotifyDataSetChanged")
     fun setItemList(itemList: ArrayList<CoinBaseItem>) {
-        val lastPosition = this.itemList.size
         this.itemList = itemList
-        if (itemList.size > lastPosition) {
-            notifyItemChanged(lastPosition)
-        } else {
-            notifyDataSetChanged()
-        }
     }
 
     fun addLoading() {
@@ -96,7 +91,7 @@ class CoinAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         @SuppressLint("SetTextI18n")
         fun bind(item: CoinBaseItem.LeftCoinItem) {
             binding.apply {
-                if (item.imageUrl.endsWith(".svg")) {
+                if (item.imageUrl.isSvg()) {
                     itemLeftCoinIv.loadSvg(item.imageUrl)
                 } else {
                     itemLeftCoinIv.load(item.imageUrl)
@@ -112,7 +107,7 @@ class CoinAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         @SuppressLint("SetTextI18n")
         fun bind(item: CoinBaseItem.RightCoinItem) {
             binding.apply {
-                if (item.imageUrl.endsWith(".svg")) {
+                if (item.imageUrl.isSvg()) {
                     itemRightCoinIv.loadSvg(item.imageUrl)
                 } else {
                     itemRightCoinIv.load(item.imageUrl)

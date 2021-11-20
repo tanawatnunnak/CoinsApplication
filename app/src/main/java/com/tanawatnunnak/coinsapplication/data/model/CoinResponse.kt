@@ -14,16 +14,16 @@ data class CoinResponse(
 
 data class Data(
     @SerializedName("coins")
-    val coins: List<Coin>,
+    val coins: List<Coin?>?,
     @SerializedName("stats")
     val stats: Stats
 )
 
 data class Coin(
     @SerializedName("description")
-    val description: String,
+    val description: String?,
     @SerializedName("iconUrl")
-    val iconUrl: String,
+    val iconUrl: String?,
     @SerializedName("id")
     val id: Int,
     @SerializedName("name")
